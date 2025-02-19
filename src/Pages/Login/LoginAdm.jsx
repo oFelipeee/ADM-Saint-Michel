@@ -4,12 +4,12 @@ import './loginAdm.css'
 export default function LoginAdm() {
   return (
     
-     <div className="background">
+     <div className="backgroundImage">
                 <br />
                 <form className='formularioLogin'>
                     <h2>Login</h2>
                     <div className="form-group">
-                        <label htmlFor="crm">EMAIL:</label>
+                        <label htmlFor="crm" className='campos'>EMAIL:</label>
                         <input
                             type="text"
                             className="form-control"
@@ -17,7 +17,7 @@ export default function LoginAdm() {
                             placeholder="Informe o seu email corporativo" />
                     </div>
                     <div className="form-group">
-                        <label htmlFor="password">SENHA:</label>
+                        <label htmlFor="password" className='campos'>SENHA:</label>
                         <input
                             type="password"
                             className="form-control"

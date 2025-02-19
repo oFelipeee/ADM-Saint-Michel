@@ -1,4 +1,4 @@
-.background {
+.backgroundImage {
     background-image: url('../../Img/admin.png');
     background-size: cover;
    width: 100%;
@@ -24,6 +24,7 @@
   
   .form-group {
     margin-bottom: 15px;
+    
   }
   
   .form-group label {
@@ -40,6 +41,7 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     box-sizing: border-box;
+    color: white;
   }
   
   

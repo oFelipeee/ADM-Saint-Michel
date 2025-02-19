@@ -1,0 +1,121 @@
+/* Estilo para o formulário e campos */
+.background {
+  background: url(../../Img/administracao.png) no-repeat center center;
+  background-size: cover;
+  min-height: 100vh;
+  padding: 30px;
+  box-sizing: border-box;
+}
+
+.tituloAdm{
+  text-align: center;
+  margin-top: 20px;
+}
+
+.formularioAdm {
+  max-width: 40%;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  margin-top: 90px;
+  padding-left: 70px;
+}
+
+.form-groupAdm, .form-groupSegundo {
+  margin-bottom: 15px;
+}
+
+.form-controlAdm, .form-controlSegundo {
+  width: 80%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  margin: auto;
+}
+
+.form-controlAdm:focus, .form-controlSegundo:focus {
+  border-color: #007bff;
+  outline: none;
+  background-color: #e9f4ff;
+}
+
+.botaoCadastrar {
+  background-color: #28a745;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  display: block;
+  margin: 20px auto 0;
+  margin-top: 20px;
+}
+
+.botaoCadastrar:hover {
+  background-color: #218838;
+}
+
+.linha-colunas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.coluna-vertical {
+  width: 48%;
+  display: flex;
+  flex-direction: column;
+}
+
+.coluna-horizontal {
+  width: 48%;
+  display: flex;
+  flex-direction: column; /* Agora a segunda coluna também está empilhada */
+}
+
+.form-groupAdm label, .form-groupSegundo label {
+  display: block;
+  margin-bottom: 5px;
+  color: #2c2828;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .linha-colunas {
+    flex-direction: column;
+  }
+
+  .coluna-vertical, .coluna-horizontal {
+    width: 100%;
+  }
+}
+.inputImagem {
+  display: block; /* Garante que o campo seja exibido como bloco */
+  width: 40%; /* Largura ajustada para ocupar todo o espaço disponível */
+  padding: 8px;
+  margin: 10px auto; /* Centraliza o input de imagem */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  font-size: 14px;
+  
+}
+
+.inputImagem:focus {
+  border-color: #007bff;
+  outline: none;
+  background-color: #e9f4ff;
+}
+
+.imgPreview {
+  margin-top: 20px;
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
