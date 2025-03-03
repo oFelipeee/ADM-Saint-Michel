@@ -1,192 +1,138 @@
-import React, { useState } from 'react'; 
+import React, { useState } from 'react';
+import axios from 'axios';
 import './cadastroAdmin.css';
 
 export default function CadastroAdmin() {
+    const [formData, setFormData] = useState({
+        nome_completo: '',
+        idade: '',
+        cpf: '',
+        crm: '',
+        telefone: '',
+        endereco: '',
+        especialidade: '',
+        nacionalidade: '',
+        email_corporativo: '',
+        senha_corporativa: '',
+    });
+
+    const [selectedFile, setSelectedFile] = useState(null);
     const [previewImagem, setPreviewImagem] = useState(null);
-    const [erroImagem, setErroImagem] = useState('');
+
+    const handleChange = (event) => {
+        const { id, value } = event.target;
+        setFormData({ ...formData, [id]: value });
+    };
 
     const handleImagemChange = (event) => {
-        const arquivo = event.target.files[0];
-      
-        if (arquivo) {
-            const tamanhoMaximo = 5 * 1024 * 1024; // Limite de 5 MB (em bytes)
-            const tipoValido = ['image/jpeg', 'image/png', 'image/gif'];
+        const file = event.target.files[0];
+        if (file) {
+            setSelectedFile(file); // Guardar o arquivo corretamente
+            setPreviewImagem(URL.createObjectURL(file)); // Exibir pré-visualização
+        }
+    };
 
-            // Verificando se o arquivo está dentro do limite de tamanho
-            if (arquivo.size > tamanhoMaximo) {
-                setErroImagem('O arquivo é muito grande. O tamanho máximo permitido é 5MB.');
-                setPreviewImagem(null);
-                return;
-            }
+    const handleSubmit = async (event) => {
+        event.preventDefault();
 
-            // Verificando se o tipo do arquivo é válido
-            if (!tipoValido.includes(arquivo.type)) {
-                setErroImagem('Formato de imagem inválido. Apenas JPG, PNG e GIF são permitidos.');
-                setPreviewImagem(null);
-                return;
-            }
+        const formDataToSend = new FormData();
 
-            // Verificando as dimensões da imagem
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    // Largura: 300px, Altura: 400px
-                    const larguraPermitida = 300;
-                    const alturaPermitida = 400;
+        // Adicionar todos os campos do formulário ao FormData
+        Object.entries(formData).forEach(([key, value]) => {
+            formDataToSend.append(key, value);
+        });
 
-                    if (img.width !== larguraPermitida || img.height !== alturaPermitida) {
-                        setErroImagem('A imagem deve ter as dimensões de 300x400px.');
-                        setPreviewImagem(null);
-                        return;
-                    }
+        // Adicionar a imagem ao FormData
+        if (selectedFile) {
+            formDataToSend.append('foto', selectedFile);
+        }
 
-                    // Se tudo estiver certo, definimos o preview da imagem
-                    setErroImagem('');
-                    setPreviewImagem(e.target.result);
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(arquivo);
+        try {
+            await axios.post('http://localhost:5000/medico/cadastro', formDataToSend, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+
+            alert('Cadastro de Médico realizado com sucesso!');
+            setFormData({
+                nome_completo: '',
+                idade: '',
+                cpf: '',
+                crm: '',
+                telefone: '',
+                endereco: '',
+                especialidade: '',
+                nacionalidade: '',
+                email_corporativo: '',
+                senha_corporativa: '',
+            });
+            setSelectedFile(null);
+            setPreviewImagem(null);
+        } catch (error) {
+            alert('Erro ao cadastrar');
+            console.error('Erro ao cadastrar', error.response ? error.response.data : error.message);
         }
     };
 
     return (
         <div className="background">
-            <form className="formularioAdm">
+            <form onSubmit={handleSubmit} className="formularioAdm">
                 <h2 className="tituloAdm">Cadastro de novos médicos:</h2>
-                <br />
-                
+
                 <div className="linha-colunas">
                     <div className="coluna-vertical">
-                        {/* Campos de entrada do formulário */}
                         <div className="form-groupAdm">
-                            <label htmlFor="nomeCompleto">Nome completo:</label>
-                            <input
-                                type="text"
-                                className="form-controlAdm"
-                                id="nomeCompleto"
-                                placeholder="Informe o nome completo do médico"
-                            />
+                            <label htmlFor="nome_completo">Nome completo:</label>
+                            <input type="text" id="nome_completo" value={formData.nome_completo} onChange={handleChange} />
                         </div>
-
                         <div className="form-groupAdm">
                             <label htmlFor="idade">Idade:</label>
-                            <input
-                                type="number"
-                                className="form-controlAdm"
-                                id="idade"
-                                placeholder="Informe a idade do médico"
-                            />
+                            <input type="number" id="idade" value={formData.idade} onChange={handleChange} />
                         </div>
-
                         <div className="form-groupAdm">
                             <label htmlFor="cpf">CPF:</label>
-                            <input
-                                type="text"
-                                className="form-controlAdm"
-                                id="cpf"
-                                placeholder="Informe o CPF do médico"
-                            />
+                            <input type="text" id="cpf" value={formData.cpf} onChange={handleChange} />
                         </div>
-
                         <div className="form-groupAdm">
                             <label htmlFor="crm">CRM:</label>
-                            <input
-                                type="text"
-                                className="form-controlAdm"
-                                id="crm"
-                                placeholder="Informe o número da CRM do médico"
-                            />
+                            <input type="text" id="crm" value={formData.crm} onChange={handleChange} />
                         </div>
-
                         <div className="form-groupAdm">
                             <label htmlFor="telefone">Telefone:</label>
-                            <input
-                                type="text"
-                                className="form-controlAdm"
-                                id="telefone"
-                                placeholder="Informe o número de telefone do médico"
-                            />
+                            <input type="text" id="telefone" value={formData.telefone} onChange={handleChange} />
                         </div>
                     </div>
 
-                    {/* Segunda coluna */}
                     <div className="coluna-vertical">
                         <div className="form-groupSegundo">
                             <label htmlFor="endereco">Endereço:</label>
-                            <input
-                                type="text"
-                                className="form-controlSegundo"
-                                id="endereco"
-                                placeholder="Informe o endereço do médico"
-                            />
+                            <input type="text" id="endereco" value={formData.endereco} onChange={handleChange} />
                         </div>
-
                         <div className="form-groupSegundo">
                             <label htmlFor="especialidade">Especialidade:</label>
-                            <input
-                                type="text"
-                                className="form-controlSegundo"
-                                id="especialidade"
-                                placeholder="Informe a especialidade do médico"
-                            />
+                            <input type="text" id="especialidade" value={formData.especialidade} onChange={handleChange} />
                         </div>
-
                         <div className="form-groupSegundo">
                             <label htmlFor="nacionalidade">Nacionalidade:</label>
-                            <input
-                                type="text"
-                                className="form-controlSegundo"
-                                id="nacionalidade"
-                                placeholder="Informe a nacionalidade do médico"
-                            />
+                            <input type="text" id="nacionalidade" value={formData.nacionalidade} onChange={handleChange} />
                         </div>
-
                         <div className="form-groupSegundo">
-                            <label htmlFor="emailCorporativo">Email Corporativo:</label>
-                            <input
-                                type="text"
-                                className="form-controlSegundo"
-                                id="emailCorporativo"
-                                placeholder="Informe o email corporativo do médico"
-                            />
+                            <label htmlFor="email_corporativo">Email Corporativo:</label>
+                            <input type="email" id="email_corporativo" value={formData.email_corporativo} onChange={handleChange} />
                         </div>
-
                         <div className="form-groupSegundo">
-                            <label htmlFor="senhaCorporativa">Senha Corporativa:</label>
-                            <input
-                                type="password"
-                                className="form-controlSegundo"
-                                id="senhaCorporativa"
-                                placeholder="Informe a senha corporativa do médico"
-                            />
+                            <label htmlFor="senha_corporativa">Senha Corporativa:</label>
+                            <input type="password" id="senha_corporativa" value={formData.senha_corporativa} onChange={handleChange} />
                         </div>
                     </div>
                 </div>
 
-                {/* Input de imagem */}
                 <div className="form-group">
-                    <input
-                        type="file"
-                        id="imagem"
-                        className="inputImagem"
-                        accept="image/*"
-                        onChange={handleImagemChange}
-                    />
+                    <input type="file" id="imagem" accept="image/*" onChange={handleImagemChange} />
                 </div>
 
-                {/* Exibindo erro de imagem */}
-                {erroImagem && <p className="erroImagem">{erroImagem}</p>}
-
-                {/* Pré-visualização da imagem */}
                 {previewImagem && (
                     <div className="imgPreview">
-                        <img 
-                            src={previewImagem} 
-                            alt="Pré-visualização"
-                            className="imgPreviewImage"
-                        />
+                        <img src={previewImagem} alt="Pré-visualização" className="imgPreviewImage" />
                     </div>
                 )}
 
