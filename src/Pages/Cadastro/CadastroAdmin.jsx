@@ -109,7 +109,21 @@ export default function CadastroAdmin() {
                         </div>
                         <div className="form-groupSegundo">
                             <label htmlFor="especialidade">Especialidade:</label>
-                            <input type="text" id="especialidade" value={formData.especialidade} onChange={handleChange} />
+                            <select id="especialidade" value={formData.especialidade} onChange={handleChange}>
+                                <option value="">Selecione uma especialidade</option>
+                                <option value="Ortopedista">Ortopedista</option>
+                                <option value="Proctologista">Proctologista</option>
+                                <option value="Oncologista">Oncologista</option>
+                                <option value="Otorrinolaringologista">Otorrinolaringologista</option>
+                                <option value="Oftalmologista">Oftalmologista</option>
+                                <option value="Cardiologista">Cardiologista</option>
+                                <option value="Pneumologista">Pneumologista</option>
+                                <option value="Nefrologista">Nefrologista</option>
+                                <option value="Gastroenterologista">Gastroenterologista</option>
+                                <option value="Urologista">Urologista</option>
+                                <option value="Dermatologista">Dermatologista</option>
+                                <option value="Ginecologista">Ginecologista</option>
+                            </select>
                         </div>
                         <div className="form-groupSegundo">
                             <label htmlFor="nacionalidade">Nacionalidade:</label>
