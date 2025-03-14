@@ -1,10 +1,25 @@
 /* Estilo para o formulário e campos */
+@import url('https://fonts.googleapis.com/css2?family=Yeseva+One&display=swap');
+
+:root {
+  --primary-font: "Yeseva One", serif;
+  --color-dark-blue: #1F2B6C;
+  --color-dark-hover: #1f2b6ca8;
+  --color-blue-card-info: #2c3e50;
+  --color-card-info: #7f8c8d;
+  --color-background-card: #7dbeff25;
+  --color-light-blue: #159EEC;
+  --color-azul-calcinha: #BFD2F8;
+  --color-dark-gray: #333;
+}
+
 .background {
   background: url(../../Img/administracao.png) no-repeat center center;
   background-size: cover;
   min-height: 100vh;
   padding: 30px;
   box-sizing: border-box;
+  font-family: var(--primary-font);
 }
 
 /* Estilos gerais */

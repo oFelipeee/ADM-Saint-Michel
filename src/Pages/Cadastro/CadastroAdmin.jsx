@@ -172,6 +172,7 @@ export default function CadastroAdmin() {
                                 id="cpf"
                                 value={formData.cpf}
                                 onChange={handleChange}
+                                placeholder='00000000000'
                                 className={errors.cpf ? 'input-error' : ''}
                             />
                             {errors.cpf && <span className="error-message">{errors.cpf}</span>}
@@ -183,6 +184,7 @@ export default function CadastroAdmin() {
                                 id="crm"
                                 value={formData.crm}
                                 onChange={handleChange}
+                                placeholder='123456/SP'
                                 className={errors.crm ? 'input-error' : ''}
                             />
                             {errors.crm && <span className="error-message">{errors.crm}</span>}
@@ -194,6 +196,7 @@ export default function CadastroAdmin() {
                                 id="telefone"
                                 value={formData.telefone}
                                 onChange={handleChange}
+                                placeholder='(DDD)000000000'
                                 className={errors.telefone ? 'input-error' : ''}
                             />
                             {errors.telefone && <span className="error-message">{errors.telefone}</span>}
@@ -254,6 +257,7 @@ export default function CadastroAdmin() {
                                 id="email_corporativo"
                                 value={formData.email_corporativo}
                                 onChange={handleChange}
+                                placeholder='exemplo@gmail.com'
                                 className={errors.email_corporativo ? 'input-error' : ''}
                             />
                             {errors.email_corporativo && <span className="error-message">{errors.email_corporativo}</span>}
