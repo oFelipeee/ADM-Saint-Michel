@@ -35,95 +35,65 @@ export default function CadastroAdmin() {
         }
     };
 
-    // Função para validar o CPF
-    const validateCPF = (cpf) => {
-        const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/; // Padrão: 000.000.000-00
-        return cpfRegex.test(cpf);
-    };
-
-    // Função para validar o CRM
-    const validateCRM = (crm) => {
-        const crmRegex = /^[A-Za-z]{2}-\d{6}$/; // Padrão: AA-123456
-        return crmRegex.test(crm);
-    };
-
-    // Função para validar o Telefone
-    const validateTelefone = (telefone) => {
-        const telefoneRegex = /^\(\d{2}\) \d{4,5}-\d{4}$/; // Padrão: (00) 00000-0000 ou (00) 0000-0000
-        return telefoneRegex.test(telefone);
-    };
-
-    // Função para validar a Idade
-    const validateIdade = (idade) => {
-        return idade > 0 && idade <= 100; // Idade entre 1 e 100 anos
-    };
-
-    // Função para validar o Email
-    const validateEmail = (email) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Padrão: usuario@dominio.com
-        return emailRegex.test(email);
-    };
-
-    // Função para validar o formulário
+    // Função para validar o formulário no frontend
     const validateForm = () => {
         const newErrors = {};
-        let isValid = true;
 
         // Validação do Nome Completo
         if (!formData.nome_completo.trim()) {
-            isValid = false;
+            newErrors.nome_completo = 'O nome completo não pode estar vazio.';
         }
 
         // Validação da Idade
         if (!formData.idade) {
-            isValid = false;
-        } else if (!validateIdade(formData.idade)) {
-            newErrors.idade = 'A idade deve estar entre 1 e 100 anos.';
-            isValid = false;
+            newErrors.idade = 'A idade é obrigatória.';
+        } else if (formData.idade < 18 || formData.idade > 80) {
+            newErrors.idade = 'A idade deve estar entre 18 e 80 anos.';
         }
 
         // Validação do CPF
         if (!formData.cpf.trim()) {
-            isValid = false;
-        } else if (!validateCPF(formData.cpf)) {
-            newErrors.cpf = 'CPF inválido. Use o formato: 000.000.000-00.';
-            isValid = false;
+            newErrors.cpf = 'O CPF é obrigatório.';
+        } else if (!/^\d{11}$/.test(formData.cpf)) {
+            newErrors.cpf = 'O CPF deve ter 11 dígitos.';
         }
 
         // Validação do CRM
         if (!formData.crm.trim()) {
-            isValid = false;
-        } else if (!validateCRM(formData.crm)) {
-            newErrors.crm = 'CRM inválido. Use o formato: AA-123456.';
-            isValid = false;
+            newErrors.crm = 'O CRM é obrigatório.';
+        } else if (!/^[0-9]{6}\/[A-Z]{2}$/.test(formData.crm)) {
+            newErrors.crm = 'CRM inválido! Formato correto: 123456/SP.';
         }
 
         // Validação do Telefone
         if (!formData.telefone.trim()) {
-            isValid = false;
-        } else if (!validateTelefone(formData.telefone)) {
-            newErrors.telefone = 'Telefone inválido. Use o formato: (00) 00000-0000.';
-            isValid = false;
+            newErrors.telefone = 'O telefone é obrigatório.';
+        } else if (!/^\d{10,11}$/.test(formData.telefone)) {
+            newErrors.telefone = 'O telefone deve ter 10 ou 11 dígitos.';
         }
 
         // Validação do Email Corporativo
         if (!formData.email_corporativo.trim()) {
-            isValid = false;
-        } else if (!validateEmail(formData.email_corporativo)) {
-            newErrors.email_corporativo = 'Email inválido. Use o formato: usuario@dominio.com.';
-            isValid = false;
+            newErrors.email_corporativo = 'O email corporativo é obrigatório.';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email_corporativo)) {
+            newErrors.email_corporativo = 'Informe um email válido.';
+        }
+
+        // Validação da Senha Corporativa
+        if (!formData.senha_corporativa.trim()) {
+            newErrors.senha_corporativa = 'A senha corporativa é obrigatória.';
         }
 
         setErrors(newErrors);
-        return isValid;
+        return Object.keys(newErrors).length === 0; // Retorna true se não houver erros
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+        // Validação no frontend
         if (!validateForm()) {
-            alert('Por favor, corrija os erros antes de enviar.');
-            return;
+            return; // Impede o envio se houver erros
         }
 
         const formDataToSend = new FormData();
@@ -154,10 +124,15 @@ export default function CadastroAdmin() {
             });
             setSelectedFile(null);
             setPreviewImagem(null);
-            setErrors({});
+            setErrors({}); // Limpa os erros após o sucesso
         } catch (error) {
-            alert('Erro ao cadastrar');
-            console.error('Erro ao cadastrar', error.response ? error.response.data : error.message);
+            if (error.response && error.response.data.errors) {
+                // Captura os erros retornados pelo backend
+                setErrors(error.response.data.errors);
+            } else {
+                alert('Erro ao cadastrar. Tente novamente mais tarde.');
+                console.error('Erro ao cadastrar:', error);
+            }
         }
     };
 
@@ -170,7 +145,13 @@ export default function CadastroAdmin() {
                     <div className="coluna-vertical">
                         <div className="form-groupAdm">
                             <label htmlFor="nome_completo">Nome completo:</label>
-                            <input type="text" id="nome_completo" value={formData.nome_completo} onChange={handleChange} />
+                            <input
+                                type="text"
+                                id="nome_completo"
+                                value={formData.nome_completo}
+                                onChange={handleChange}
+                                className={errors.nome_completo ? 'input-error' : ''}
+                            />
                             {errors.nome_completo && <span className="error-message">{errors.nome_completo}</span>}
                         </div>
                         <div className="form-groupAdm">
@@ -180,8 +161,7 @@ export default function CadastroAdmin() {
                                 id="idade"
                                 value={formData.idade}
                                 onChange={handleChange}
-                                min="1"
-                                max="100"
+                                className={errors.idade ? 'input-error' : ''}
                             />
                             {errors.idade && <span className="error-message">{errors.idade}</span>}
                         </div>
@@ -192,7 +172,7 @@ export default function CadastroAdmin() {
                                 id="cpf"
                                 value={formData.cpf}
                                 onChange={handleChange}
-                                placeholder="000.000.000-00"
+                                className={errors.cpf ? 'input-error' : ''}
                             />
                             {errors.cpf && <span className="error-message">{errors.cpf}</span>}
                         </div>
@@ -203,7 +183,7 @@ export default function CadastroAdmin() {
                                 id="crm"
                                 value={formData.crm}
                                 onChange={handleChange}
-                                placeholder="AA-123456"
+                                className={errors.crm ? 'input-error' : ''}
                             />
                             {errors.crm && <span className="error-message">{errors.crm}</span>}
                         </div>
@@ -214,7 +194,7 @@ export default function CadastroAdmin() {
                                 id="telefone"
                                 value={formData.telefone}
                                 onChange={handleChange}
-                                placeholder="(00) 00000-0000"
+                                className={errors.telefone ? 'input-error' : ''}
                             />
                             {errors.telefone && <span className="error-message">{errors.telefone}</span>}
                         </div>
@@ -223,11 +203,23 @@ export default function CadastroAdmin() {
                     <div className="coluna-vertical">
                         <div className="form-groupSegundo">
                             <label htmlFor="endereco">Endereço:</label>
-                            <input type="text" id="endereco" value={formData.endereco} onChange={handleChange} />
+                            <input
+                                type="text"
+                                id="endereco"
+                                value={formData.endereco}
+                                onChange={handleChange}
+                                className={errors.endereco ? 'input-error' : ''}
+                            />
+                            {errors.endereco && <span className="error-message">{errors.endereco}</span>}
                         </div>
                         <div className="form-groupSegundo">
                             <label htmlFor="especialidade">Especialidade:</label>
-                            <select id="especialidade" value={formData.especialidade} onChange={handleChange}>
+                            <select
+                                id="especialidade"
+                                value={formData.especialidade}
+                                onChange={handleChange}
+                                className={errors.especialidade ? 'input-error' : ''}
+                            >
                                 <option value="">Selecione uma especialidade</option>
                                 <option value="Ortopedista">Ortopedista</option>
                                 <option value="Proctologista">Proctologista</option>
@@ -242,10 +234,18 @@ export default function CadastroAdmin() {
                                 <option value="Dermatologista">Dermatologista</option>
                                 <option value="Ginecologista">Ginecologista</option>
                             </select>
+                            {errors.especialidade && <span className="error-message">{errors.especialidade}</span>}
                         </div>
                         <div className="form-groupSegundo">
                             <label htmlFor="nacionalidade">Nacionalidade:</label>
-                            <input type="text" id="nacionalidade" value={formData.nacionalidade} onChange={handleChange} />
+                            <input
+                                type="text"
+                                id="nacionalidade"
+                                value={formData.nacionalidade}
+                                onChange={handleChange}
+                                className={errors.nacionalidade ? 'input-error' : ''}
+                            />
+                            {errors.nacionalidade && <span className="error-message">{errors.nacionalidade}</span>}
                         </div>
                         <div className="form-groupSegundo">
                             <label htmlFor="email_corporativo">Email Corporativo:</label>
@@ -254,19 +254,27 @@ export default function CadastroAdmin() {
                                 id="email_corporativo"
                                 value={formData.email_corporativo}
                                 onChange={handleChange}
-                                placeholder="usuario@dominio.com"
+                                className={errors.email_corporativo ? 'input-error' : ''}
                             />
                             {errors.email_corporativo && <span className="error-message">{errors.email_corporativo}</span>}
                         </div>
                         <div className="form-groupSegundo">
                             <label htmlFor="senha_corporativa">Senha Corporativa:</label>
-                            <input type="password" id="senha_corporativa" value={formData.senha_corporativa} onChange={handleChange} />
+                            <input
+                                type="password"
+                                id="senha_corporativa"
+                                value={formData.senha_corporativa}
+                                onChange={handleChange}
+                                className={errors.senha_corporativa ? 'input-error' : ''}
+                            />
+                            {errors.senha_corporativa && <span className="error-message">{errors.senha_corporativa}</span>}
                         </div>
                     </div>
                 </div>
 
                 <div className="form-group">
                     <input type="file" id="imagem" accept="image/*" onChange={handleImagemChange} />
+                    {errors.foto && <span className="error-message">{errors.foto}</span>}
                 </div>
 
                 {previewImagem && (
